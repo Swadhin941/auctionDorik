@@ -27,12 +27,12 @@ const authSchema = new mongoose.Schema({
         },
     },
     createdAt: {
-        type: Date,
+        type: Number,
         default: Date.now(),
     },
 });
 
-const otpSchema= new mongoose.Schema({
+const otpSchema = new mongoose.Schema({
     email: {
         type: String,
         required: [true, "Email is required"],
@@ -48,5 +48,5 @@ const otpSchema= new mongoose.Schema({
 });
 
 const Auth = mongoose.model("users", authSchema);
-const OTPSchema= mongoose.model("otp", otpSchema);
-module.exports = {Auth, OTPSchema};
+const OTPSchema = mongoose.model("otp", otpSchema);
+module.exports = { Auth, OTPSchema };

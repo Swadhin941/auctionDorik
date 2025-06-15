@@ -6,11 +6,13 @@ const {
     access_token,
     backend,
     smtpUser,
+    transporter,
 } = require("../config/config");
 const { Auth, OTPSchema } = require("../models/auth.model");
 
 const sendVerificationEmail = async (email, username) => {
     try {
+        console.log(email, username);
         const otp = Math.floor(1000 + Math.random() * 9000);
         const mailOptions = {
             from: smtpUser,
@@ -22,6 +24,7 @@ const sendVerificationEmail = async (email, username) => {
                    <p>Thank you!</p>`,
         };
         const info = await transporter.sendMail(mailOptions);
+        console.log(info.response, otp);
         if (info.messageId) {
             console.log("Verification email sent successfully to " + email);
             return otp;
@@ -35,14 +38,18 @@ const sendVerificationEmail = async (email, username) => {
 
 const register = async (req, res) => {
     try {
+        
         const { email, password, role } = req.body;
         const name = email.split("@")[0];
+        // console.log(req.body, name);
         const findEmail = await Auth.findOne({ email });
+        // console.log(findEmail);
         if (findEmail) {
             return res.status(400).json({
                 message: "Email already exists",
             });
         }
+        let result;
         bcrypt.hash(password, saltRounds, async (err, hash) => {
             if (err) {
                 return res.status(500).json({
@@ -51,12 +58,13 @@ const register = async (req, res) => {
                 });
             }
             const newUser = new Auth({
-                name,
-                email,
+                name: name,
+                email: email,
                 role: role,
+                password: hash,
                 isVerified: false,
             });
-            const result = await newUser.save();
+            result = await newUser.save();
             const otp = await sendVerificationEmail(email, name);
             if (!otp) {
                 return res.status(500).json({
@@ -74,23 +82,8 @@ const register = async (req, res) => {
             }
             return res
                 .status(201)
-                .send({ result, message: "User registered successfully" });
+                .send({ result:{name: result.name,email: result.email, isVerified:result.isVerified, }, message: "User registered successfully" });
         });
-        if (result.name) {
-            return res.status(201).json({
-                message: "User registered successfully",
-                user: {
-                    name: result.name,
-                    email: result.email,
-                    role: result.role,
-                    isVerified: result.isVerified,
-                },
-            });
-        } else {
-            return res.status(400).json({
-                message: "User registration failed",
-            });
-        }
     } catch (error) {
         return res.status(500).json({
             message: "Internal Server Error",
