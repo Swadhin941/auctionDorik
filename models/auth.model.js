@@ -42,7 +42,7 @@ const otpSchema = new mongoose.Schema({
         required: [true, "OTP is required"],
     },
     createdAt: {
-        type: Date,
+        type: Number,
         default: Date.now(),
     },
 });

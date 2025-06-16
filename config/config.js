@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const cron = require("node-cron");
 const port = process.env.PORT || 4000;
 const mongoose = require("mongoose");
 const dbURI = process.env.DB_URI || "";
@@ -20,4 +21,4 @@ const transporter = nodemailer.createTransport({
         pass: process.env.SMTP_PASS || ""
     }
 })
-module.exports = { express, cors, port, mongoose,dbURI, bcrypt, saltRounds, jwt, access_token, backend, transporter, smtpUser };
+module.exports = { express, cors, port, mongoose,dbURI, bcrypt, saltRounds, jwt, access_token, backend, transporter, smtpUser, cron };
