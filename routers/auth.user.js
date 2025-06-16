@@ -7,7 +7,7 @@ const authUser = express.Router();
 
 authUser.post("/register",registerValidator(authValidatorSchemas.registerSchemas), register);
 authUser.post("/create-jwt", registerValidator(authValidatorSchemas.jwtSchemas), createJWT);
-authUser.post("/login", registerValidator(authValidatorSchemas.registerSchemas), login);
+authUser.post("/login", registerValidator(authValidatorSchemas.resetPasswordValidation), login);
 authUser.post("/verify-otp", registerValidator(authValidatorSchemas.otpValidation), verifyOTP);
 authUser.post("/forget-email-check", registerValidator(authValidatorSchemas.forgetEmailValidation), forgetEmailCheck);
 authUser.post('/reset-password', registerValidator(authValidatorSchemas.resetPasswordValidation), resetPassword);
